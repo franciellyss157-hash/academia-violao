@@ -1,0 +1,10 @@
+.lesson h3{margin-top:1.2em;border-left:4px solid var(--brass);padding-left:10px}
+.opt{display:block;width:100%;text-align:left;margin:6px 0;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit;cursor:pointer}
+.opt.ok{border-color:var(--ok);background:rgba(47,125,79,.15)}.opt.bad{border-color:var(--bad);background:rgba(179,64,47,.15)}
+.strings{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:10px 0}
+.strings button{padding:14px 0;border-radius:8px;border:1px solid var(--brass);background:var(--card);color:var(--ink);font:inherit;cursor:pointer}
+.chord{display:flex;gap:6px;font-variant-numeric:tabular-nums}.chord b{flex:1;text-align:center;border:1px solid var(--line);border-radius:6px;padding:6px 0}
+.bpm{font-size:2.4rem;font-family:Georgia,serif}
+.beat{width:18px;height:18px;border-radius:50%;background:var(--line);display:inline-block;margin:0 4px}.beat.on{background:var(--brass)}
+.steps{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px}.steps span{font-size:.8rem;padding:3px 10px;border-radius:99px;border:1px solid var(--line);color:var(--mute)}.steps .on{background:var(--pine);color:#fff;border-color:var(--pine)}
+summary{cursor:pointer}details .list{margin-top:8px}.list a.lock{cursor:default}

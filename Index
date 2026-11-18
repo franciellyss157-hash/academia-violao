@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Academia de Violão</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2F5D50">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/lessons.css">
+<link rel="stylesheet" href="css/certificate.css">
+</head>
+<body>
+<header class="top"><button id="menuBtn" aria-label="Abrir menu">☰</button><strong>Academia de Violão</strong><span id="pct"></span></header>
+<nav id="nav" class="nav"></nav>
+<main id="view" tabindex="-1"></main>
+<script src="js/storage.js"></script>
+<script src="js/courses.js"></script>
+<script src="js/lessons.js"></script>
+<script src="js/progress.js"></script>
+<script src="js/quizzes.js"></script>
+<script src="js/exercises.js"></script>
+<script src="js/practice.js"></script>
+<script src="js/certificate.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -147,6 +147,36 @@ export default function DiscoverScreen() {
         <Chip label="Figurinhas" icon="happy-outline" onPress={() => router.push('/stickers')} />
       </View>
 
+      {(user?.credits ?? 0) <= 2 ? (
+        <Pressable
+          onPress={() => router.push('/credits')}
+          style={({ pressed }) => ({
+            marginTop: 10,
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 10,
+            paddingHorizontal: 14,
+            paddingVertical: 12,
+            borderRadius: 16,
+            borderWidth: 1,
+            borderColor: C.borderPink,
+            backgroundColor: 'rgba(255,61,154,0.1)',
+            opacity: pressed ? 0.85 : 1,
+          })}
+        >
+          <Ionicons name="diamond-outline" size={18} color={C.pink} />
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontFamily: F.semi, fontSize: 12.5, color: C.pinkSoft }}>
+              Créditos acabando!
+            </Text>
+            <Text style={{ fontFamily: F.body, fontSize: 11, color: C.muted }}>
+              Toque para ver os planos e continuar conversando
+            </Text>
+          </View>
+          <Ionicons name="chevron-forward" size={14} color={C.pink} />
+        </Pressable>
+      ) : null}
+
       {loading ? (
         <View style={{ paddingVertical: 60 }}>
           <ActivityIndicator color={C.pink} />

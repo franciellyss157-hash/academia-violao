@@ -55,22 +55,13 @@ router.post('/likes/:userId', async (req, res) => {
     targetId,
     req.user.id,
   ]);
-  const mutual = back.rowCount > 0 || target.demo_likes_back;
+  const mutual = back.rowCount > 0;
 
   if (!mutual) {
-    if (!target.demo) {
-      await notify(targetId, 'nova_curtida', 'Alguém sussurrou por você', `${req.user.name} curtiu seu perfil.`, {
-        userId: req.user.id,
-      });
-    }
+    await notify(targetId, 'nova_curtida', 'Alguém sussurrou por você', `${req.user.name} curtiu seu perfil.`, {
+      userId: req.user.id,
+    });
     return res.json({ match: false, likesLeft: limit - used - 1 });
-  }
-
-  if (target.demo_likes_back && back.rowCount === 0) {
-    await pool.query(
-      'INSERT INTO likes (from_user, to_user) VALUES ($1,$2) ON CONFLICT DO NOTHING',
-      [targetId, req.user.id]
-    );
   }
 
   const a = req.user.id < targetId ? req.user.id : targetId;
@@ -84,9 +75,7 @@ router.post('/likes/:userId', async (req, res) => {
   const matchId = created.rows[0].id;
 
   await notify(req.user.id, 'match', 'É um match!', `Você e ${target.name} se curtiram.`, { matchId });
-  if (!target.demo) {
-    await notify(targetId, 'match', 'É um match!', `Você e ${req.user.name} se curtiram.`, { matchId });
-  }
+  await notify(targetId, 'match', 'É um match!', `Você e ${req.user.name} se curtiram.`, { matchId });
 
   res.json({ match: true, matchId, likesLeft: limit - used - 1 });
 });
@@ -174,11 +163,9 @@ router.post('/invites', async (req, res) => {
     `INSERT INTO invites (from_user, to_user, message) VALUES ($1,$2,$3) RETURNING *`,
     [req.user.id, toUserId, message]
   );
-  if (!target.rows[0].demo) {
-    await notify(toUserId, 'convite', 'Novo convite', `${req.user.name} enviou um convite para você.`, {
-      inviteId: rows[0].id,
-    });
-  }
+  await notify(toUserId, 'convite', 'Novo convite', `${req.user.name} enviou um convite para você.`, {
+    inviteId: rows[0].id,
+  });
   res.status(201).json({ invite: rows[0] });
 });
 

@@ -271,23 +271,7 @@ const INSPIRATION = [
   ['a8', 'abertura', 'Se hoje fosse um capítulo de livro, qual seria o título?'],
 ];
 
-const DEMO_USERS = [
-  ['00000000-0000-4000-8000-000000000001', 'Helena Duarte', 27, 'Salvador, BA', 'Fotografia, vinho e viagens longas. Acredito em conversas que duram até o sol nascer.', ['Fotografia', 'Vinho', 'Viagens', 'Música'], 'relacionamento_serio', true],
-  ['00000000-0000-4000-8000-000000000002', 'Rafael Nogueira', 31, 'São Paulo, SP', 'Chef nas horas vagas, corredor por teimosia. Procuro alguém para dividir a sobremesa.', ['Gastronomia', 'Corrida', 'Cinema'], 'namoro', true],
-  ['00000000-0000-4000-8000-000000000003', 'Isabela Reis', 24, 'Rio de Janeiro, RJ', 'Arquiteta, apaixonada por jazz e por finais de semana sem pressa.', ['Jazz', 'Arquitetura', 'Praia', 'Dança'], 'algo_casual', false],
-  ['00000000-0000-4000-8000-000000000004', 'Lucas Prado', 29, 'Belo Horizonte, MG', 'Designer, plantador de suculentas. Bom ouvinte e péssimo dançarino.', ['Design', 'Plantas', 'Séries', 'Café'], 'namoro', true],
-  ['00000000-0000-4000-8000-000000000005', 'Camila Torres', 33, 'Curitiba, PR', 'Médica veterinária. Vivo com dois gatos e um bom livro. Busco amizade sincera.', ['Animais', 'Livros', 'Trilhas'], 'amizade', false],
-  ['00000000-0000-4000-8000-000000000006', 'Beatriz Lima', 26, 'Recife, PE', 'Publicitária, apaixonada por forró e por gente que ri alto.', ['Forró', 'Publicidade', 'Praia', 'Petiscos'], 'relacionamento_serio', true],
-];
 
-const DEMO_PHOTOS = {
-  '00000000-0000-4000-8000-000000000001': 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=700&h=900&q=80',
-  '00000000-0000-4000-8000-000000000002': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=700&h=900&q=80',
-  '00000000-0000-4000-8000-000000000003': 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&h=900&q=80',
-  '00000000-0000-4000-8000-000000000004': 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=700&h=900&q=80',
-  '00000000-0000-4000-8000-000000000005': 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=700&h=900&q=80',
-  '00000000-0000-4000-8000-000000000006': 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=700&h=900&q=80',
-};
 
 async function seed() {
   for (const p of PACKAGES) {
@@ -316,26 +300,8 @@ async function seed() {
     );
   }
 
-  const demoHash = bcrypt.hashSync('demo-sussurro-2026', 8);
-  for (const [id, name, age, city, bio, interests, intent, likesBack] of DEMO_USERS) {
-    const birth = new Date();
-    birth.setFullYear(birth.getFullYear() - age);
-    const email = `${name.split(' ')[0].toLowerCase()}@demo.sussurro`;
-    await pool.query(
-      `INSERT INTO users (id, name, email, password_hash, birthdate, bio, city, interests, intent, demo, demo_likes_back, verified, verification_status)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,true,$10,true,'approved')
-       ON CONFLICT (id) DO NOTHING`,
-      [id, name, email, demoHash, birth.toISOString().slice(0, 10), bio, city, interests, intent, likesBack]
-    );
-    const photo = DEMO_PHOTOS[id];
-    if (photo) {
-      await pool.query(
-        `INSERT INTO photos (user_id, url, position)
-         SELECT $1,$2,0 WHERE NOT EXISTS (SELECT 1 FROM photos WHERE user_id=$1)`,
-        [id, photo]
-      );
-    }
-  }
+  // Remove any leftover demo users from previous seeds
+  await pool.query(`DELETE FROM users WHERE demo = true`);
 }
 
 async function init() {

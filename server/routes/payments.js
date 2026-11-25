@@ -15,12 +15,15 @@ const PIX_HOLDER = process.env.PIX_HOLDER || 'Francielly S.';
 
 router.get('/packages', async (req, res) => {
   const pkgs = await pool.query('SELECT * FROM packages WHERE active = true ORDER BY sort');
-  const unlocks = await pool.query('SELECT pack FROM sticker_unlocks WHERE user_id = $1', [req.user.id]);
+  const isAdmin = req.user.role === 'admin';
+  const unlocks = isAdmin
+    ? { rows: [] }
+    : await pool.query('SELECT pack FROM sticker_unlocks WHERE user_id = $1', [req.user.id]);
   res.json({
     packages: pkgs.rows.map((p) => ({ ...p, price: Number(p.price) })),
-    credits: req.user.credits,
-    vip: req.user.vip,
-    highlightUntil: req.user.highlight_until,
+    credits: isAdmin ? 0 : req.user.credits,
+    vip: isAdmin ? false : req.user.vip,
+    highlightUntil: isAdmin ? null : req.user.highlight_until,
     unlockedPacks: unlocks.rows.map((r) => r.pack),
     pix: { key: PIX_KEY, holder: PIX_HOLDER },
     dailyReceiptLimit: DAILY_RECEIPT_LIMIT,

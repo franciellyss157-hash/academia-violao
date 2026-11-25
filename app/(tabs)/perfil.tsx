@@ -142,8 +142,33 @@ export default function ProfileScreen() {
           />
         </Glass>
 
-        <View style={{ flexDirection: 'row', gap: 10, marginTop: 12 }}>
-          <NeonButton label="Créditos" small variant="pink" icon="diamond-outline" style={{ flex: 1 }} onPress={() => router.push('/credits')} />
+        <Pressable
+          onPress={() => router.push('/credits')}
+          style={({ pressed }) => ({
+            marginTop: 12,
+            borderRadius: 20,
+            padding: 1.5,
+            opacity: pressed ? 0.9 : 1,
+          })}
+        >
+          <LinearGradient
+            colors={['rgba(255,61,154,0.5)', 'rgba(233,199,124,0.3)']}
+            style={{ borderRadius: 18, padding: 14, flexDirection: 'row', alignItems: 'center', gap: 12 }}
+          >
+            <View style={{ width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,61,154,0.15)' }}>
+              <Ionicons name="diamond" size={20} color={C.pinkSoft} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontFamily: F.semi, fontSize: 14, color: C.text }}>Comprar créditos e planos</Text>
+              <Text style={{ fontFamily: F.body, fontSize: 11, color: C.muted, marginTop: 1 }}>
+                Pix · {user?.credits ?? 0} créditos {user?.vip ? '· VIP ativo' : ''}
+              </Text>
+            </View>
+            <Ionicons name="chevron-forward" size={16} color={C.gold} />
+          </LinearGradient>
+        </Pressable>
+
+        <View style={{ flexDirection: 'row', gap: 10, marginTop: 10 }}>
           <NeonButton label="Figurinhas" small variant="gold" icon="happy-outline" style={{ flex: 1 }} onPress={() => router.push('/stickers')} />
         </View>
 

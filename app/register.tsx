@@ -1,11 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Animated, Platform, Pressable, Text, View } from 'react-native';
+import { GlowOrb } from '../components/Particles';
 import { Field, H1, Header, Muted, NeonButton, Screen } from '../components/ui';
 import { api } from '../lib/api';
 import { useSession } from '../lib/session';
 import { C, F } from '../lib/theme';
+
+const USE_NATIVE = Platform.OS !== 'web';
 
 function toIsoDate(value: string) {
   const digits = value.replace(/\D/g, '');
@@ -34,6 +37,16 @@ export default function RegisterScreen() {
   const [terms, setTerms] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const fade = useRef(new Animated.Value(0)).current;
+  const slideY = useRef(new Animated.Value(20)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fade, { toValue: 1, duration: 500, delay: 100, useNativeDriver: USE_NATIVE }),
+      Animated.spring(slideY, { toValue: 0, delay: 100, friction: 7, tension: 45, useNativeDriver: USE_NATIVE }),
+    ]).start();
+  }, [fade, slideY]);
 
   async function submit() {
     setError('');
@@ -70,8 +83,9 @@ export default function RegisterScreen() {
 
   return (
     <Screen>
+      <GlowOrb size={280} color={C.gold} opacity={0.08} style={{ top: '8%', left: '-30%' }} />
       <Header title="Cadastro" subtitle="Só para maiores de 18 anos" />
-      <View style={{ marginTop: 18 }}>
+      <Animated.View style={{ marginTop: 18, opacity: fade, transform: [{ translateY: slideY }] }}>
         <H1 style={{ fontSize: 27 }}>Comece a sussurrar</H1>
         <Muted style={{ marginTop: 6, marginBottom: 20 }}>
           Seus dados são tratados conforme a LGPD e nunca aparecem para quem você não quiser.
@@ -140,7 +154,7 @@ export default function RegisterScreen() {
             Já tem conta? <Text style={{ fontFamily: F.semi, color: C.pinkSoft }}>Entrar</Text>
           </Muted>
         </Pressable>
-      </View>
+      </Animated.View>
     </Screen>
   );
 }

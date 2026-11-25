@@ -1,10 +1,13 @@
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Animated, Platform, Pressable, Text, View } from 'react-native';
+import { GlowOrb } from '../components/Particles';
 import { Field, H1, Header, Muted, NeonButton, Screen } from '../components/ui';
 import { api } from '../lib/api';
 import { useSession } from '../lib/session';
 import { C, F } from '../lib/theme';
+
+const USE_NATIVE = Platform.OS !== 'web';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -13,6 +16,16 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const fade = useRef(new Animated.Value(0)).current;
+  const slideY = useRef(new Animated.Value(20)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fade, { toValue: 1, duration: 500, delay: 100, useNativeDriver: USE_NATIVE }),
+      Animated.spring(slideY, { toValue: 0, delay: 100, friction: 7, tension: 45, useNativeDriver: USE_NATIVE }),
+    ]).start();
+  }, [fade, slideY]);
 
   async function submit() {
     setError('');
@@ -30,8 +43,9 @@ export default function LoginScreen() {
 
   return (
     <Screen>
+      <GlowOrb size={280} color={C.pink} opacity={0.1} style={{ top: '8%', right: '-30%' }} />
       <Header title="Acesso" subtitle="Bem-vindo(a) de volta ao Sussurro" />
-      <View style={{ marginTop: 24 }}>
+      <Animated.View style={{ marginTop: 24, opacity: fade, transform: [{ translateY: slideY }] }}>
         <H1 style={{ fontSize: 28 }}>Que bom te ver</H1>
         <Muted style={{ marginTop: 6, marginBottom: 22 }}>
           Entre com o e-mail e a senha que você criou.
@@ -74,7 +88,7 @@ export default function LoginScreen() {
             ACESSO ADM
           </Text>
         </Pressable>
-      </View>
+      </Animated.View>
     </Screen>
   );
 }
